@@ -6,18 +6,18 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 
     <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="de48ac83-650f-424f-a322-eebea5688e30" file="properties/${mule.env}.yaml" key="${runtime.key}" />
 	
-    <http:listener-config name="dn-customerdb-sys-api-httpListenerConfig">
+    <http:listener-config name="dn-customerdb-sys-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
     
-    <apikit:config name="dn-customerdb-sys-api-config" api="dn-customerdb-sys-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="dn-customerdb-sys-config" api="dn-customerdb-sys.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     
     <db:config name="Database_Config" doc:name="Database Config" doc:id="8e9482af-3461-42cd-bc4e-1e160189301d" >
 		<db:my-sql-connection host="${secure::mysql.host}" port="${secure::mysql.port}" user="${secure::mysql.username}" password="${secure::mysql.password}" database="${secure::mysql.database}" />
 	</db:config>
 
-	<flow name="dn-customerdb-sys-api-main">
-        <http:listener config-ref="dn-customerdb-sys-api-httpListenerConfig" path="/api/*">
+	<flow name="dn-customerdb-sys-main">
+        <http:listener config-ref="dn-customerdb-sys-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
@@ -26,7 +26,7 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="dn-customerdb-sys-api-config" />
+        <apikit:router config-ref="dn-customerdb-sys-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform doc:name="Transform Message">
@@ -108,8 +108,8 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="dn-customerdb-sys-api-console">
-        <http:listener config-ref="dn-customerdb-sys-api-httpListenerConfig" path="/console/*">
+    <flow name="dn-customerdb-sys-console">
+        <http:listener config-ref="dn-customerdb-sys-httpListenerConfig" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:response>
@@ -118,7 +118,7 @@ output application/json
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="dn-customerdb-sys-api-config" />
+        <apikit:console config-ref="dn-customerdb-sys-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform doc:name="Transform Message">
@@ -135,19 +135,19 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\heart-beat:dn-customerdb-sys-api-config">
-        <logger level="INFO" message="get:\heart-beat:dn-customerdb-sys-api-config" />
+    <flow name="get:\heart-beat:dn-customerdb-sys-config">
+        <logger level="INFO" message="get:\heart-beat:dn-customerdb-sys-config" />
     </flow>
-    <flow name="get:\customers\(cid):dn-customerdb-sys-api-config">
+    <flow name="get:\customers\(cid):dn-customerdb-sys-config">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
                 <ee:set-variable variableName="cid">attributes.uriParams.'cid'</ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <logger level="INFO" message="get:\customers\(cid):dn-customerdb-sys-api-config" />
+        <logger level="INFO" message="get:\customers\(cid):dn-customerdb-sys-config" />
     </flow>
-    <flow name="get:\customers:dn-customerdb-sys-api-config">
-        <logger level="INFO" message="get:\customers:dn-customerdb-sys-api-config" />
+    <flow name="get:\customers:dn-customerdb-sys-config">
+        <logger level="INFO" message="get:\customers:dn-customerdb-sys-config" />
 		<db:select doc:name="Select" doc:id="a609b568-f2c1-4123-8490-5a39c7ee88fc" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM Customers]]></db:sql>
 		</db:select>
