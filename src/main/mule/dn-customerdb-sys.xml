@@ -4,7 +4,8 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
  
 
-    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="de48ac83-650f-424f-a322-eebea5688e30" file="properties/${mule.env}.yaml" key="${runtime.key}" />
+    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" 
+    		doc:id="de48ac83-650f-424f-a322-eebea5688e30" file="properties/${mule.env}.yaml" key="${runtime.key}" />
 	
     <http:listener-config name="dn-customerdb-sys-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
@@ -137,6 +138,16 @@ output application/json
     </flow>
     <flow name="get:\heart-beat:dn-customerdb-sys-config">
         <logger level="INFO" message="get:\heart-beat:dn-customerdb-sys-config" />
+		<ee:transform doc:name="Transform Message" doc:id="464b859e-fe49-48ae-88f4-35e6f3f60b2b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status": "ok"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
     </flow>
     <flow name="get:\customers\(cid):dn-customerdb-sys-config">
         <ee:transform doc:name="Transform Message">
