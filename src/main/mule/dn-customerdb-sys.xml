@@ -138,9 +138,12 @@ output application/json
     </flow>
     <flow name="get:\heart-beat:dn-customerdb-sys-config">
         <logger level="INFO" message="get:\heart-beat:dn-customerdb-sys-config" />
-		<ee:transform doc:name="Transform Message" doc:id="464b859e-fe49-48ae-88f4-35e6f3f60b2b" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<flow-ref doc:name="ref-heart-beat" doc:id="4a0fa58d-4e14-488b-b817-f5c4895a449a" name="heart-beat"/>
+    </flow>
+    <flow name="heart-beat" doc:id="ad1f6ab4-3c33-40ab-9a84-6cd38f1443ad" >
+		<ee:transform doc:name="Transform Message" doc:id="464b859e-fe49-48ae-88f4-35e6f3f60b2b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -148,8 +151,8 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-    </flow>
-    <flow name="get:\customers\(cid):dn-customerdb-sys-config">
+	</flow>
+	<flow name="get:\customers\(cid):dn-customerdb-sys-config">
         <ee:transform doc:name="Transform Message">
             <ee:variables>
                 <ee:set-variable variableName="cid">attributes.uriParams.'cid'</ee:set-variable>
